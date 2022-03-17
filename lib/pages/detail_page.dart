@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -43,29 +42,39 @@ class _DetailPageState extends State<DetailPage> {
             child: Row(
               children: [
                 c.profilePath == null
-                    ? Container()
-                    : CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                            API.imageURL + c.profilePath!),
-                      ),
+                    ? CircleAvatar( backgroundImage: AssetImage('images/avatar.png'),)
+                    :  CircleAvatar(
+                      //radius: 40,
+                      child:  CachedNetworkImage(
+                        imageUrl: API.imageURL + c.profilePath! ,
+                        placeholder: (context, url)=> Image.asset("images/avatar.png"),
+                        imageBuilder: (context, image)=> CircleAvatar(
+                          backgroundImage: image,
+                          //radius: 40,
+                          ),
+                      )
+                        //backgroundImage: CachedNetworkImageProvider(API.imageURL + c.profilePath!,
+                        ),
+                                 
                 const SizedBox(
                   width: 12,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      c.originalName,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Text(
-                      c.character,
-                      style: TextStyle(color: Colors.white24),
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                      maxLines: 3,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        c.originalName,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Text(
+                        c.character,
+                        style: TextStyle(color: Colors.white24),
+                        //overflow: TextOverflow.ellipsis,
+                        //maxLines: 3,
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
@@ -75,14 +84,13 @@ class _DetailPageState extends State<DetailPage> {
   _movieInformation() => Column(
         children: [
           SizedBox(
-
-              child: Hero(
-                  tag: widget.htag ,
-                  child: Image(
-                image: CachedNetworkImageProvider(
-                    API.imageURL + widget.movie.posterPath),
-              )),
-              
+            child: Hero(
+                tag: widget.htag,
+                child: FadeInImage(
+                  image: CachedNetworkImageProvider(
+                      API.imageURL + widget.movie.posterPath),
+                  placeholder: AssetImage("images/movie_bg.jpg"),
+                )),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -114,7 +122,9 @@ class _DetailPageState extends State<DetailPage> {
       body: Stack(
         children: [
           BlurBackground(
-            backdropPath: widget.movie.backdropPath == null? "" : widget.movie.backdropPath!,
+            backdropPath: widget.movie.backdropPath == null
+                ? ""
+                : widget.movie.backdropPath!,
           ),
           SingleChildScrollView(
             child: Column(

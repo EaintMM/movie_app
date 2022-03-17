@@ -59,9 +59,11 @@ class _MovieListState extends State<MovieList> {
                             //child: Image.network(API.imageURL + m.posterPath),
                             child: Hero(
                               tag: widget.title + m.id.toString(),
-                              child: Image(
-                                  image: CachedNetworkImageProvider(
-                                      API.imageURL + m.posterPath)),
+                              child: FadeInImage(
+                                image: CachedNetworkImageProvider(
+                                    API.imageURL + m.posterPath),
+                                placeholder: AssetImage("images/movie_bg.jpg"),
+                              ),
                             ),
                           ),
                           const SizedBox(
