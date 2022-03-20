@@ -1,7 +1,8 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:movie_app/components/blur_background.dart';
+import 'package:movie_app/controllers/details_controller.dart';
 import 'package:movie_app/models/cast.dart';
 import 'package:movie_app/models/movie.dart';
 import 'package:movie_app/network/api.dart';
@@ -18,44 +19,42 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   var api = API();
-  List<Cast>? casts;
+  final DetailsController c = Get.put(DetailsController());
   @override
   void initState() {
-    api.getCast(widget.movie.id).then((value) {
-      setState(() {
-        casts = value;
-      });
-    });
+    c.loadCast(widget.movie.id);
     super.initState();
   }
 
   _castInformation() => ListView.builder(
         scrollDirection: Axis.vertical,
-        itemCount: casts!.length,
+        itemCount: c.castList.length,
         shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         itemBuilder: (BuildContext context, int index) {
-          Cast c = casts![index];
+          Cast cast = c.castList[index];
           //print(c.profilePath);
           return Padding(
             padding: const EdgeInsets.all(6.0),
             child: Row(
               children: [
-                c.profilePath == null
-                    ? CircleAvatar( backgroundImage: AssetImage('images/avatar.png'),)
-                    :  CircleAvatar(
-                      //radius: 40,
-                      child:  CachedNetworkImage(
-                        imageUrl: API.imageURL + c.profilePath! ,
-                        placeholder: (context, url)=> Image.asset("images/avatar.png"),
-                        imageBuilder: (context, image)=> CircleAvatar(
+                cast.profilePath == null
+                    ? CircleAvatar(
+                        backgroundImage: AssetImage('images/avatar.png'),
+                      )
+                    : CircleAvatar(
+                        //radius: 40,
+                        child: CachedNetworkImage(
+                        imageUrl: API.imageURL + cast.profilePath!,
+                        placeholder: (context, url) =>
+                            Image.asset("images/avatar.png"),
+                        imageBuilder: (context, image) => CircleAvatar(
                           backgroundImage: image,
                           //radius: 40,
-                          ),
+                        ),
                       )
                         //backgroundImage: CachedNetworkImageProvider(API.imageURL + c.profilePath!,
                         ),
-                                 
                 const SizedBox(
                   width: 12,
                 ),
@@ -64,11 +63,11 @@ class _DetailPageState extends State<DetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        c.originalName,
+                        cast.originalName,
                         style: TextStyle(color: Colors.white),
                       ),
                       Text(
-                        c.character,
+                        cast.character,
                         style: TextStyle(color: Colors.white24),
                         //overflow: TextOverflow.ellipsis,
                         //maxLines: 3,
@@ -133,7 +132,7 @@ class _DetailPageState extends State<DetailPage> {
                 SizedBox(
                   height: 12,
                 ),
-                casts == null
+                c.castList == null
                     ? const CircularProgressIndicator()
                     : _castInformation()
               ],

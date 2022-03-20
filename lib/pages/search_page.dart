@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie_app/components/search_list.dart';
-import 'package:movie_app/controllers/search_controller.dart';
+import 'package:movie_app/controllers/home_controller.dart';
+
 
 
 class SearchPage extends StatefulWidget {
@@ -12,7 +13,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final SearchController c = Get.put(SearchController());
+  final HomeController c = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
